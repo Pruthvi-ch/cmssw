@@ -232,6 +232,7 @@ void DDHGCalSiliconModule::initialize(const DDNumericArguments& nArgs,
 #ifdef EDM_ML_DEBUG
   edm::LogVerbatim("HGCalGeom") << "DDHGCalSiliconModule: NameSpace " << nameSpace_;
 #endif
+  std::cout<< nameSpace_ <<std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -405,7 +406,9 @@ void DDHGCalSiliconModule::positionSensitive(const DDLogicalPart& glog, int laye
     std::string wafer;
     int i(999);
     if (part == HGCalTypes::WaferFull) {
-      i = layertype * waferTypes_ + type;
+      i = (orien % 2) * waferTypes_ * facingTypes_ + layertype * waferTypes_ + type;
+      if (orien > 0)
+	std::cout<< orien << "   " << u << "  " << v << "   " << i << "  " << waferFull_[i] <<std::endl;
       wafer = waferFull_[i];
     } else {
       i = (part - 1) * waferTypes_ * facingTypes_ * orientationTypes_ + layertype * waferTypes_ * orientationTypes_ +

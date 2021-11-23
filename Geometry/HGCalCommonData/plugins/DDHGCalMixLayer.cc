@@ -519,7 +519,7 @@ void DDHGCalMixLayer::positionMix(const DDLogicalPart& glog,
     std::string wafer;
     int i(999);
     if (part == HGCalTypes::WaferFull) {
-      i = layerType * waferTypes_ + type;
+      i = (orien % 2) * waferTypes_ * facingTypes_ + layerType * waferTypes_ + type;
       wafer = waferFull_[i];
     } else {
       i = (part - 1) * waferTypes_ * facingTypes_ * orientationTypes_ + layerType * waferTypes_ * orientationTypes_ +
