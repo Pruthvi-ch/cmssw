@@ -173,95 +173,59 @@ void DDHGCalWaferF::execute(DDCompactView& cpv) {
     zi += layerThick_[i];
     thickTot += layerThick_[i];
     if (layerType_[i] > 0) {
+      int n2 = nCells_ / 2;
+      double y0 = (cellType_ >= 3) ? 0.5 : 0.0;
+      double x0 = (cellType_ >= 3) ? 0.5 : 1.0;
+      int u_max = (cellType_ >= 3) ? (nCells_ - 1) : nCells_;
+      int v_max = (cellType_ >= 3) ? nCells_ : (nCells_ - 1);
       for (int u = 0; u < 2 * nCells_; ++u) {
         for (int v = 0; v < 2 * nCells_; ++v) {
-          int n2 = nCells_ / 2;
-          double xp;
-          double yp;
-          int cell(0);
-	  //std::cout<<"kill"<<std::endl
-	  if (cellType_ >= 3){
-            if (((v - u) <= nCells_) && (u - v) < nCells_) {
-              yp = (u - 0.5 * v - n2 + 0.5) * 2 * r;
-              xp = (1.5 * (v - nCells_) + 0.5) * R;
-              if ((u == 0) && (v == 0))
-                cell = 19;
-              else if ((u == 0) && (v == nCells_))
-                cell = 20;
-              else if ((u == nCells_ - 1) && (v == 2 * nCells_ - 1))
-                cell = 21;
-              else if ((u == 2 * nCells_ - 1) && (v == 2 * nCells_ - 1))
-                cell = 22;
-              else if ((u == 2 * nCells_ - 1) && (v == nCells_))
-                cell = 23;
-              else if ((u == nCells_-1) && (v == 0))
-                cell = 24;
-              else if (u == 0)
-                cell = 10;
-              else if ((v - u) == (nCells_))
-                cell = 4;
-              else if (v == (2 * nCells_ - 1))
-                cell = 11;
-              else if (u == (2 * nCells_ - 1))
-                cell = 5;
-              else if ((u - v) == nCells_ -1)
-                cell = 12;
-              else if (v == 0)
-                cell = 6;
-	      //std::cout<<"1"<<std::endl;
-	      DDTranslation tran(xp, yp, 0);
-	      int copy = HGCalTypes::packCellTypeUV(cellType_, u, v);
-	      cpv.position(DDName(cellNames_[cell]), glogs[i], copy, tran, rot);
+          if (((v - u) <= v_max) && (u - v) <= u_max) {
+            double yp = (u - 0.5 * v - n2 + y0) * 2 * r;
+            double xp = (1.5 * (v - nCells_) + x0) * R;
+            int cell(0);
+            if ((u == 0) && (v == 0))
+              cell = 7;
+            else if ((u == 0) && (v == v_max))
+              cell = 8;
+            else if ((u == nCells_) && (v == 2 * nCells_ - 1))
+              cell = 9;
+            else if ((u == 2 * nCells_ - 1) && (v == 2 * nCells_ - 1))
+              cell = 10;
+            else if ((u == 2 * nCells_ - 1) && (v == v_max))
+              cell = 11;
+            else if ((u == nCells_) && (v == 0))
+              cell = 12;
+            else if (u == 0)
+              cell = 1;
+            else if ((v - u) == v_max){
+              cell = 4;
+              int cellp = (cellType_ >= 3) ? (cell + 12) : cell;
+              std::cout<<parentName<<"  "<<v<<"  "<<u<<"  "<<cellNames_[cellp]<<std::endl;
+              }
+            else if (v == (2 * nCells_ - 1))
+              cell = 2;
+            else if (u == (2 * nCells_ - 1))
+              cell = 5;
+            else if ((u - v) == u_max)
+              cell = 3;
+            else if (v == 0)
+              cell = 6;
+	        if ((cellType_ >= 3) && (cell != 0))
+	          cell += 12;
+            DDTranslation tran(xp, yp, 0);
+            int copy = HGCalTypes::packCellTypeUV(cellType_, u, v);
+            cpv.position(DDName(cellNames_[cell]), glogs[i], copy, tran, rot);
 #ifdef EDM_ML_DEBUG
             edm::LogVerbatim("HGCalGeom")
                 << "DDHGCalWaferF: " << cellNames_[cell] << " number " << copy << " positioned in " << glogs[i].name()
                 << " at " << tran << " with no rotation";
 #endif
-            }
-	  }else{
-	    if (((v - u) < nCells_) && (u - v) <= nCells_) {
-              yp = (u - 0.5 * v - n2) * 2 * r;
-              xp = (1.5 * (v - nCells_) + 1.0) * R;
-              if ((u == 0) && (v == 0))
-                cell = 13;
-              else if ((u == 0) && (v == nCells_ - 1))
-                cell = 14;
-              else if ((u == nCells_) && (v == 2 * nCells_ - 1))
-                cell = 15;
-              else if ((u == 2 * nCells_ - 1) && (v == 2 * nCells_ - 1))
-                cell = 16;
-              else if ((u == 2 * nCells_ - 1) && (v == nCells_ - 1))
-                cell = 17;
-              else if ((u == nCells_) && (v == 0))
-                cell = 18;
-              else if (u == 0)
-                cell = 1;
-              else if ((v - u) == (nCells_ - 1))
-                cell = 7;
-              else if (v == (2 * nCells_ - 1))
-                cell = 2;
-              else if (u == (2 * nCells_ - 1))
-                cell = 8;
-              else if ((u - v) == nCells_)
-                cell = 3;
-              else if (v == 0)
-                cell = 9;
-	      //std::cout<<"0"<<std::endl;
-	      DDTranslation tran(xp, yp, 0);
-	      int copy = HGCalTypes::packCellTypeUV(cellType_, u, v);
-	      cpv.position(DDName(cellNames_[cell]), glogs[i], copy, tran, rot);
-#ifdef EDM_ML_DEBUG
-            edm::LogVerbatim("HGCalGeom")
-                << "DDHGCalWaferF: " << cellNames_[cell] << " number " << copy << " positioned in " << glogs[i].name()
-                << " at " << tran << " with no rotation";
-#endif
-            }
-	  }  //std::cout<< xp <<"  "<< yp <<std::endl;
+          }
         }
       }
     }
   }
-  std::cout<< parent().name() << std::endl;
   if (std::abs(thickTot - thick_) >= tol) {
     if (thickTot > thick_) {
       edm::LogError("HGCalGeom") << "Thickness of the partition " << thick_ << " is smaller than " << thickTot
