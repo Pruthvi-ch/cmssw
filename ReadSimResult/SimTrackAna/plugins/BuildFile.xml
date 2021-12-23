@@ -1,0 +1,26 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/TrackReco"/>
+<use name="PhysicsTools/UtilAlgos"/>
+<use name="FWCore/ServiceRegistry"/> 
+<!-- // Following includes are the suggestions from https://twiki.cern.ch/twiki/bin/view/CMSPublic/DDtoDD4HepMigration#Geometry_Builder_Migration -->
+<use name="Geometry/HGCalGeometry"/> 
+<use name="DetectorDescription/DDCMS"/>
+<use name="dd4hep"/>
+<!-- <lib name="Geom"/> -->
+<!-- //In additon one may also book at the buildfile of Geometry/HGCalGeometry/test/BuildfFile.xml -->
+<use name="CommonTools/UtilAlgos"/>
+<use name="DataFormats/HcalDetId"/>
+<use name="DataFormats/ForwardDetId"/>
+<use name="DataFormats/GeometryVector"/>
+<!-- <use name="FWCore/ParameterSet"/> -->
+<!-- <use name="FWCore/ServiceRegistry"/> -->
+<use name="Geometry/HcalTowerAlgo"/>
+<!-- <use name="Geometry/HGCalGeometry"/> -->
+<use name="Geometry/Records"/>
+<use name="MagneticField/Engine"/>
+<use name="MagneticField/Records"/>
+<use name="RecoLocalCalo/HGCalRecAlgos"/>
+<use name="CoralBase"/>
+<flags EDM_PLUGIN="1"/>

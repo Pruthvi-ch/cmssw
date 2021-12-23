@@ -16,10 +16,13 @@
     <Numeric name="SensorSeparation" value="[hgcal:SensorSeparation]"/>
     <Numeric name="Sectors"          value="36"/>
     <String  name="LayerRotation"    value="hgcal:LayerRotation"/>
-    <Vector name="WaferNamesFull" type="string" nEntries="6">
-      hgcalwafer:HGCalEEWafer0Fine,    hgcalwafer:HGCalEEWafer0Coarse1,
-      hgcalwafer:HGCalEEWafer0Coarse2, hgcalwafer:HGCalEEWafer1Fine,
-      hgcalwafer:HGCalEEWafer1Coarse1, hgcalwafer:HGCalEEWafer1Coarse2</Vector>
+    <Vector name="WaferNamesFull" type="string" nEntries="12">
+      hgcalwafer:HGCalEEWafer0Fine0,    hgcalwafer:HGCalEEWafer0Coarse10,
+      hgcalwafer:HGCalEEWafer0Coarse20, hgcalwafer:HGCalEEWafer1Fine0,
+      hgcalwafer:HGCalEEWafer1Coarse10, hgcalwafer:HGCalEEWafer1Coarse20,
+      hgcalwafer:HGCalEEWafer0Fine1,    hgcalwafer:HGCalEEWafer0Coarse11,
+      hgcalwafer:HGCalEEWafer0Coarse21, hgcalwafer:HGCalEEWafer1Fine1,
+      hgcalwafer:HGCalEEWafer1Coarse11, hgcalwafer:HGCalEEWafer1Coarse21</Vector>
     <Vector name="WaferNamesPartial" type="string" nEntries="324">
       hgcalwafer:HGCalEEWafer0Fineb0,    hgcalwafer:HGCalEEWafer0Fineb1,
       hgcalwafer:HGCalEEWafer0Fineb2,    hgcalwafer:HGCalEEWafer0Fineb3,
@@ -1409,11 +1412,11 @@
        6818535 
     </Vector>
     <Vector name="WaferProperties" type="numeric" nEntries="8058">
-       3030,    0,    0,    1,    2,    2,    2, 5072,   30,    0,
+       3030, 1000,    0, 1001,    2, 1002,    2, 5072,   30,    0,
           0,    1,    2,    2,    2, 2072, 3060,    0,    0,    0,
           2,    2,    2,    2, 5060,    0,    0,    0,    2,    2,
           2, 4012, 5030, 4060, 4030,    0,    0,    0,    1,    2,
-          2,    2,   72,    0,    0,    0,    1,    2,    2,    2,
+          2,    2,   72,    0, 1000,    0, 1001,    2, 1002,    2,
        2072,    0,    0,    0,    0,    0,    0,    1,    2,    2,
           2,   42,    0,    0,    1,    2,    2,    2, 3042,    0,
           0,    0,    0,    0,    0,    1,    2,    2,    2, 1012,

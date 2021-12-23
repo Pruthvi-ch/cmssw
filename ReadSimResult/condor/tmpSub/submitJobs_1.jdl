@@ -1,0 +1,19 @@
+Executable =  rungen.sh 
+Universe   = vanilla
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Transfer_Input_Files = generator.tar.gz, rungen.sh
+x509userproxy = /afs/cern.ch/user/p/psuryade/private/CMSSW/CMSSW_12_2_X_2021-12-08-1100/src/ReadSimResult/condor/tmpSub/x509up_u135619
+use_x509userproxy = true
+RequestCpus = 4
++BenchmarkJob = True
+#+JobFlavour = "testmatch"
++MaxRuntime = 259200
+Output = log/log_$(cluster)_$(process).stdout
+Error  = log/log_$(cluster)_$(process).stderr
+Log    = log/log_$(cluster)_$(process).condor
+
+X=$(step)
+Arguments  = Extended2026D86 $INT(X) 
+Queue 10
+

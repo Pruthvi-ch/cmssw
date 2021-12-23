@@ -16,9 +16,10 @@
     <Numeric name="SensorSeparation" value="[hgcal:SensorSeparation]"/>
     <Numeric name="Sectors"          value="36"/>
     <String  name="LayerRotation"    value="hgcal:LayerRotation"/>
-    <Vector name="WaferNamesFull" type="string" nEntries="3">
-      hgcalwafer:HGCalHEWafer0Fine,    hgcalwafer:HGCalHEWafer0Coarse1,
-      hgcalwafer:HGCalHEWafer0Coarse2</Vector>
+    <Vector name="WaferNamesFull" type="string" nEntries="6">
+      hgcalwafer:HGCalHEWafer0Fine0,    hgcalwafer:HGCalHEWafer0Coarse10,
+      hgcalwafer:HGCalHEWafer0Coarse20, hgcalwafer:HGCalHEWafer0Fine1,
+      hgcalwafer:HGCalHEWafer0Coarse11, hgcalwafer:HGCalHEWafer0Coarse21,</Vector>
     <Vector name="WaferNamesPartial" type="string" nEntries="162">
       hgcalwafer:HGCalHEWafer0Fineb0,    hgcalwafer:HGCalHEWafer0Fineb1,
       hgcalwafer:HGCalHEWafer0Fineb2,    hgcalwafer:HGCalHEWafer0Fineb3,
@@ -103,11 +104,10 @@
       hgcalwafer:HGCalHEWafer0Coarse2bm4, hgcalwafer:HGCalHEWafer0Coarse2bm5</Vector>
     <Vector name="MaterialNames" type="string" nEntries="7"> 
       materials:StainlessSteel, materials:StainlessSteel, materials:Air,
-      materials:Air, materials:StainlessSteel, materials:Copper, 
-      materials:Air</Vector>
+      materials:Air, materials:Copper, materials:Copper, materials:Air</Vector>
     <Vector name="VolumeNames" type="string" nEntries="7">
       HGCalHEAbsorber1, HGCalHEAbsorber2, HGCalHEAirGap0, HGCalHEAirGap1,
-      HGCalHESteelCover, HGCalHECoolingPlate, HGCalHESiliconLayer</Vector>
+      HGCalHECopperCover, HGCalHECoolingPlate, HGCalHESiliconLayer</Vector>
     <Vector name="Thickness" type="numeric" nEntries="7">
       45.0*mm, 41.5*mm, 1.25*mm, 4.00*mm, 2.50*mm, 6.35*mm, 
       [hgcal:ModuleThicknessHE] </Vector>
