@@ -155,7 +155,7 @@ bool HGCalParametersFromDD::build(const DDCompactView* cpv,
                                       << ":" << php.waferThick_ << ":" << php.sensorSeparation_ << ":" << php.mouseBite_
                                       << ":" << php.waferR_;
 #endif
-        for (int k = 0; k < 2; ++k)
+        for (int k = 0; k < 4; ++k)
           getCellPosition(php, k);
       }
     }
@@ -355,7 +355,7 @@ bool HGCalParametersFromDD::build(const cms::DDCompactView* cpv,
                                     << ":" << php.waferThick_ << ":" << php.sensorSeparation_ << ":" << php.mouseBite_
                                     << ":" << php.waferR_;
 #endif
-      for (int k = 0; k < 2; ++k)
+      for (int k = 0; k < 4; ++k)
         getCellPosition(php, k);
     }
     if (php.mode_ == HGCalGeometryMode::Hexagon) {
@@ -461,7 +461,7 @@ bool HGCalParametersFromDD::build(const cms::DDCompactView* cpv,
 }
 
 void HGCalParametersFromDD::getCellPosition(HGCalParameters& php, int type) {
-  if (type == 1) {
+  if (type == 1 || || type == 3) {
     php.cellCoarseX_.clear();
     php.cellCoarseY_.clear();
   } else {
@@ -472,7 +472,7 @@ void HGCalParametersFromDD::getCellPosition(HGCalParameters& php, int type) {
 #ifdef EDM_ML_DEBUG
   std::vector<int> indtypes;
 #endif
-  int N = (type == 1) ? php.nCellsCoarse_ : php.nCellsFine_;
+  int N = (type == 1 || type == 3) ? php.nCellsCoarse_ : php.nCellsFine_;
   double R = php.waferSize_ / (3 * N);
   double r = 0.5 * R * sqrt(3.0);
   int n2 = N / 2;
@@ -480,8 +480,8 @@ void HGCalParametersFromDD::getCellPosition(HGCalParameters& php, int type) {
   for (int u = 0; u < 2 * N; ++u) {
     for (int v = 0; v < 2 * N; ++v) {
       if (((v - u) < N) && (u - v) <= N) {
-        double yp = (u - 0.5 * v - n2) * 2 * r;
-        double xp = (1.5 * (v - N) + 1.0) * R;
+	double yp = (type_ >= 2) ? ((u + v - (2*N) + 1) * r) : ((u - 0.5 * v - (0.5*N)) * 2 * r);
+        double xp = (type_ >= 2) ? ((3 * (v - u) + 1) * 0.5 * R) : ((1.5 * (v - N) + 1) * R);
         int id = v * 100 + u;
 #ifdef EDM_ML_DEBUG
         indtypes.emplace_back(id);
@@ -489,9 +489,15 @@ void HGCalParametersFromDD::getCellPosition(HGCalParameters& php, int type) {
         if (type == 1) {
           php.cellCoarseX_.emplace_back(xp);
           php.cellCoarseY_.emplace_back(yp);
-        } else {
+        } else if (type == 0) {
           php.cellFineX_.emplace_back(xp);
           php.cellFineY_.emplace_back(yp);
+        } else if (type == 2) {
+          php.cellFineXR_.emplace_back(xp);
+          php.cellFineYR_.emplace_back(yp);
+        } else if (type == 3) {
+          php.cellCoarseXR_.emplace_back(xp);
+          php.cellCoarseYR_.emplace_back(yp);
         }
         cellIndex[id] = ipos;
         ++ipos;

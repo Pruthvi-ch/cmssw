@@ -119,10 +119,14 @@ public:
   std::vector<double> waferPosY_;
   std::vector<double> cellFineX_;
   std::vector<double> cellFineY_;
+  std::vector<double> cellFineXR_;
+  std::vector<double> cellFineYR_;
   wafer_map cellFineIndex_;
   std::vector<bool> cellFineHalf_;
   std::vector<double> cellCoarseX_;
   std::vector<double> cellCoarseY_;
+  std::vector<double> cellCoarseXR_;
+  std::vector<double> cellCoarseYR_;
   wafer_map cellCoarseIndex_;
   std::vector<bool> cellCoarseHalf_;
   std::vector<int> layerGroupM_;
