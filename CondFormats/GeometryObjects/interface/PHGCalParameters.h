@@ -46,6 +46,10 @@ public:
   std::vector<double> cellFineY_;
   std::vector<double> cellCoarseX_;
   std::vector<double> cellCoarseY_;
+  std::vector<double> cellFineXR_;
+  std::vector<double> cellFineYR_;
+  std::vector<double> cellCoarseXR_;
+  std::vector<double> cellCoarseYR_;
   std::vector<double> boundR_;
   std::vector<int> moduleLayS_;
   std::vector<int> moduleLayR_;

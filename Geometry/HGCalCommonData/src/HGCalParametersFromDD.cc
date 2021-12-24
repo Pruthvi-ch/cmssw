@@ -461,18 +461,25 @@ bool HGCalParametersFromDD::build(const cms::DDCompactView* cpv,
 }
 
 void HGCalParametersFromDD::getCellPosition(HGCalParameters& php, int type) {
-  if (type == 1 || type == 3) {
+  if (type == 1) {
     php.cellCoarseX_.clear();
     php.cellCoarseY_.clear();
-  } else {
+  } else if (type == 0){
     php.cellFineX_.clear();
     php.cellFineY_.clear();
+  } else if (type == 2){
+    php.cellFineXR_.clear();
+    php.cellFineYR_.clear();
+  } else if (type == 3) {
+    php.cellCoarseXR_.clear();
+    php.cellCoarseYR_.clear();
   }
   HGCalParameters::wafer_map cellIndex;
 #ifdef EDM_ML_DEBUG
   std::vector<int> indtypes;
 #endif
   int N = (type == 1 || type == 3) ? php.nCellsCoarse_ : php.nCellsFine_;
+  std::cout << type << "   " << N << std::endl;
   double R = php.waferSize_ / (3 * N);
   double r = 0.5 * R * sqrt(3.0);
   int n2 = N / 2;

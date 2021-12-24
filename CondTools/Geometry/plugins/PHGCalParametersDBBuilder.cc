@@ -131,6 +131,10 @@ void PHGCalParametersDBBuilder::swapParameters(HGCalParameters* ptp, PHGCalParam
   phgp->cellFineY_.swap(ptp->cellFineY_);
   phgp->cellCoarseX_.swap(ptp->cellCoarseX_);
   phgp->cellCoarseY_.swap(ptp->cellCoarseY_);
+  phgp->cellFineXR_.swap(ptp->cellFineXR_);
+  phgp->cellFineYR_.swap(ptp->cellFineYR_);
+  phgp->cellCoarseXR_.swap(ptp->cellCoarseXR_);
+  phgp->cellCoarseYR_.swap(ptp->cellCoarseYR_);
   phgp->boundR_.swap(ptp->boundR_);
   phgp->moduleLayS_.swap(ptp->moduleLayS_);
   phgp->moduleLayR_.swap(ptp->moduleLayR_);
