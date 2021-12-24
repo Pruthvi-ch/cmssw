@@ -461,7 +461,7 @@ bool HGCalParametersFromDD::build(const cms::DDCompactView* cpv,
 }
 
 void HGCalParametersFromDD::getCellPosition(HGCalParameters& php, int type) {
-  if (type == 1 || || type == 3) {
+  if (type == 1 || type == 3) {
     php.cellCoarseX_.clear();
     php.cellCoarseY_.clear();
   } else {
@@ -480,8 +480,8 @@ void HGCalParametersFromDD::getCellPosition(HGCalParameters& php, int type) {
   for (int u = 0; u < 2 * N; ++u) {
     for (int v = 0; v < 2 * N; ++v) {
       if (((v - u) < N) && (u - v) <= N) {
-	double yp = (type_ >= 2) ? ((u + v - (2*N) + 1) * r) : ((u - 0.5 * v - (0.5*N)) * 2 * r);
-        double xp = (type_ >= 2) ? ((3 * (v - u) + 1) * 0.5 * R) : ((1.5 * (v - N) + 1) * R);
+	double yp = (type >= 2) ? ((u + v - (2*N) + 1) * r) : ((u - 0.5 * v - (0.5*N)) * 2 * r);
+        double xp = (type >= 2) ? ((3 * (v - u) + 1) * 0.5 * R) : ((1.5 * (v - N) + 1) * R);
         int id = v * 100 + u;
 #ifdef EDM_ML_DEBUG
         indtypes.emplace_back(id);

@@ -671,11 +671,11 @@ std::pair<float, float> HGCalDDDConstants::locateCell(
   double x(0), y(0);
   int indx = HGCalWaferIndex::waferIndex(lay, waferU, waferV);
   auto itr = hgpar_->typesInLayers_.find(indx);
-  auto itr2 = hgpar_->waferInfoMap_(indx);
-  int orient = itr2->orient();
-  if (lay == 1 && orient > 0){
-    std::cout << waferU << waferV << orient << std::endl;
-  }
+  //auto itr2 = hgpar_->waferInfoMap_.find(indx);
+  //int orient = itr2->second.orient;
+  //if (lay == 1 && orient > 0){
+    //std::cout << waferU << waferV << orient << std::endl;
+  //}
   int type = ((itr == hgpar_->typesInLayers_.end()) ? 2 : hgpar_->waferTypeL_[itr->second]);
   bool rotx =
       ((!hgpar_->layerType_.empty()) && (hgpar_->layerType_[lay - hgpar_->firstLayer_] == HGCalTypes::WaferCenterR));
