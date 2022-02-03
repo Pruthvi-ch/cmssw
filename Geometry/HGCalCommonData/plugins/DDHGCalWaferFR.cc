@@ -116,7 +116,7 @@ void DDHGCalWaferFR::initialize(const DDNumericArguments& nArgs,
   std::ostringstream st2;
   for (unsigned int i = 0; i < cellOffset_.size(); ++i)
     st2 << " [" << i << "] " << cellOffset_[i];
-  edm::LogVerbatim("HGCalGeom") << "DDHGCalWaferF: " << cellOffset.size() << << " types of cells with offsets " << st2.str();
+  edm::LogVerbatim("HGCalGeom") << "DDHGCalWaferF: " << cellOffset_.size() << " types of cells with offsets " << st2.str();
   for (unsigned int k = 0; k < cellNames_.size(); ++k)
     edm::LogVerbatim("HGCalGeom") << "DDHGCalWaferF: Cell[" << k << "] " << cellNames_[k];
 #endif
@@ -210,7 +210,7 @@ void DDHGCalWaferFR::execute(DDCompactView& cpv) {
             std::pair<double, double> xy1 = wafer.HGCalCellUV2XY1(u, v, placeIndex_, cellType_);
             double yp = xy1.second;
             double xp = xy1.first;
-            int cell_off(0), cell(0);
+            int cell(0);
             std::pair<int, int> cell1 = wafer.HGCalCellUV2Cell(u, v, placeIndex_, cellType_);
             cell = cell1.first + cellOffset_[cell1.second];
             DDTranslation tran(xp, yp, 0);

@@ -44,9 +44,9 @@ std::pair<int32_t, int32_t> HGCalCellUV::HGCalCellUVFromXY1(double xloc, double 
   double x = (placement>=6) ? xloc: -1*xloc;
   const std::vector<double> fcos = {0.5, 1.0, 0.5, -0.5, -1.0, -0.5};
   const std::vector<double> fsin = {-sqrt3By2_, 0.0, sqrt3By2_, sqrt3By2_, 0.0, -sqrt3By2_};
-    x = x * fcos[placement%6] + y * fsin[placement%6];
-    y = x * fsin[placement%6] + y * fcos[placement%6];
-  }
+  x = x * fcos[placement%6] + y * fsin[placement%6];
+  y = x * fsin[placement%6] + y * fcos[placement%6];
+  
   
   int32_t u(-100), v(-100);
   double r2 = 0.5 * sqrt3_;

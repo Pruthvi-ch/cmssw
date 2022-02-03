@@ -19,6 +19,7 @@ private:
   std::pair<int32_t, int32_t> HGCalCellUVFromXY2(double xloc, double yloc, int ncell, double cellX, double cellY, double cellXTotal, double cellYTotal, std::map<std::pair<int, int>, std::pair<double, double> >& cellPos, bool extend, bool debug);
 
   const double sqrt3_ = std::sqrt(3.0);
+  const double sqrt3By2_ = 0.5 * std::sqrt(3.0);
 
   int32_t ncell_[2];
   double cellX_[2], cellY_[2], cellXTotal_[2], cellYTotal_[2], waferSize;
