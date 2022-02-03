@@ -16,6 +16,8 @@
  *
  * \new features: Elisa Fontanesi
  *                - extended for three-body correlation conditions
+ * \new features: Dragana Pilipovic
+ *                - updated for invariant mass over delta R condition
  *
  * $Date$
  * $Revision$
@@ -319,6 +321,7 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
                    condition.getType() == esConditionType::CaloCaloCorrelation ||
                    condition.getType() == esConditionType::CaloEsumCorrelation ||
                    condition.getType() == esConditionType::InvariantMass ||
+                   condition.getType() == esConditionType::InvariantMassDeltaR ||
                    condition.getType() == esConditionType::TransverseMass ||
                    condition.getType() == esConditionType::InvariantMassUpt) {  // Added for displaced muons
           parseCorrelation(condition, chipNr);
@@ -331,42 +334,39 @@ void l1t::TriggerMenuParser::parseCondFormats(const L1TUtmTriggerMenu* utmMenu) 
         } else if (condition.getType() == esConditionType::Externals) {
           parseExternal(condition, chipNr);
 
+          //parse CorrelationWithOverlapRemoval
+        } else if (condition.getType() == esConditionType::CaloCaloCorrelationOvRm ||
+                   condition.getType() == esConditionType::InvariantMassOvRm ||
+                   condition.getType() == esConditionType::TransverseMassOvRm ||
+                   condition.getType() == esConditionType::DoubleJetOvRm ||
+                   condition.getType() == esConditionType::DoubleTauOvRm) {
+          parseCorrelationWithOverlapRemoval(condition, chipNr);
+
         } else if (condition.getType() == esConditionType::SingleEgammaOvRm ||
                    condition.getType() == esConditionType::DoubleEgammaOvRm ||
                    condition.getType() == esConditionType::TripleEgammaOvRm ||
                    condition.getType() == esConditionType::QuadEgammaOvRm ||
                    condition.getType() == esConditionType::SingleTauOvRm ||
-                   condition.getType() == esConditionType::DoubleTauOvRm ||
                    condition.getType() == esConditionType::TripleTauOvRm ||
                    condition.getType() == esConditionType::QuadTauOvRm ||
                    condition.getType() == esConditionType::SingleJetOvRm ||
-                   condition.getType() == esConditionType::DoubleJetOvRm ||
                    condition.getType() == esConditionType::TripleJetOvRm ||
                    condition.getType() == esConditionType::QuadJetOvRm) {
-          edm::LogError("TriggerMenuParser")
-              << std::endl
-              << "SingleEgammaOvRm" << std::endl
-              << "DoubleEgammaOvRm" << std::endl
-              << "TripleEgammaOvRm" << std::endl
-              << "QuadEgammaOvRm" << std::endl
-              << "SingleTauOvRm" << std::endl
-              << "DoubleTauOvRm" << std::endl
-              << "TripleTauOvRm" << std::endl
-              << "QuadTauOvRm" << std::endl
-              << "SingleJetOvRm" << std::endl
-              << "DoubleJetOvRm" << std::endl
-              << "TripleJetOvRm" << std::endl
-              << "QuadJetOvRm" << std::endl
-              << "The above conditions types OvRm are not implemented yet in the parser. Please remove alogrithms that "
-                 "use this type of condtion from L1T Menu!"
-              << std::endl;
-
-        }
-        //parse CorrelationWithOverlapRemoval
-        else if (condition.getType() == esConditionType::CaloCaloCorrelationOvRm ||
-                 condition.getType() == esConditionType::InvariantMassOvRm ||
-                 condition.getType() == esConditionType::TransverseMassOvRm) {
-          parseCorrelationWithOverlapRemoval(condition, chipNr);
+          edm::LogError("TriggerMenuParser") << std::endl
+                                             << "\n SingleEgammaOvRm"
+                                             << "\n DoubleEgammaOvRm"
+                                             << "\n TripleEgammaOvRm"
+                                             << "\n QuadEgammaOvRm"
+                                             << "\n SingleTauOvRm"
+                                             << "\n TripleTauOvRm"
+                                             << "\n QuadTauOvRm"
+                                             << "\n SingleJetOvRm"
+                                             << "\n TripleJetOvRm"
+                                             << "\n QuadJetOvRm"
+                                             << "\n The above conditions types OvRm are not implemented yet in the "
+                                                "parser. Please remove alogrithms that "
+                                                "use this type of condtion from L1T Menu!"
+                                             << std::endl;
         }
 
       }  //if condition is a new one
@@ -2729,7 +2729,8 @@ bool l1t::TriggerMenuParser::parseCorrelation(tmeventsetup::esCondition corrCond
                                       << " Max = " << maxV << " precMin = " << cut.getMinimum().index
                                       << " precMax = " << cut.getMaximum().index << std::endl;
         cutType = cutType | 0x20;
-      } else if (cut.getCutType() == esCutType::Mass) {
+      } else if ((cut.getCutType() == esCutType::Mass) ||
+                 (cut.getCutType() == esCutType::MassDeltaR)) {  //Invariant Mass, MassOverDeltaR
         LogDebug("TriggerMenuParser") << "CutType: " << cut.getCutType() << "\tMass Cut minV = " << minV
                                       << " Max = " << maxV << " precMin = " << cut.getMinimum().index
                                       << " precMax = " << cut.getMaximum().index << std::endl;
@@ -2739,6 +2740,8 @@ bool l1t::TriggerMenuParser::parseCorrelation(tmeventsetup::esCondition corrCond
         // cutType = cutType | 0x8;
         if (corrCond.getType() == esConditionType::TransverseMass) {
           cutType = cutType | 0x10;
+        } else if (corrCond.getType() == esConditionType::InvariantMassDeltaR) {
+          cutType = cutType | 0x80;
         } else {
           cutType = cutType | 0x8;
         }
@@ -2990,6 +2993,11 @@ bool l1t::TriggerMenuParser::parseCorrelationThreeBody(tmeventsetup::esCondition
       corrThreeBodyParameter.maxMassCutValue = (long long)(maxV * pow(10., cut.getMaximum().index));
       corrThreeBodyParameter.precMassCut = cut.getMinimum().index;
       cutType = cutType | 0x8;
+    } else if (cut.getCutType() == esCutType::MassDeltaR) {
+      corrThreeBodyParameter.minMassCutValue = (long long)(minV * pow(10., cut.getMinimum().index));
+      corrThreeBodyParameter.maxMassCutValue = (long long)(maxV * pow(10., cut.getMaximum().index));
+      corrThreeBodyParameter.precMassCut = cut.getMinimum().index;
+      cutType = cutType | 0x80;
     }
   }
   corrThreeBodyParameter.corrCutType = cutType;
@@ -3164,6 +3172,11 @@ bool l1t::TriggerMenuParser::parseCorrelationWithOverlapRemoval(const tmeventset
         corrParameter.maxMassCutValue = (long long)(maxV * pow(10., cut.getMaximum().index));
         corrParameter.precMassCut = cut.getMinimum().index;
         cutType = cutType | 0x8;
+      } else if (cut.getCutType() == esCutType::MassDeltaR) {
+        corrParameter.minMassCutValue = (long long)(minV * pow(10., cut.getMinimum().index));
+        corrParameter.maxMassCutValue = (long long)(maxV * pow(10., cut.getMaximum().index));
+        corrParameter.precMassCut = cut.getMinimum().index;
+        cutType = cutType | 0x80;
       }
       if (cut.getCutType() == esCutType::OvRmDeltaEta) {
         //std::cout << "OverlapRemovalDeltaEta Cut minV = " << minV << " Max = " << maxV << " precMin = " << cut.getMinimum().index << " precMax = " << cut.getMaximum().index << std::endl;

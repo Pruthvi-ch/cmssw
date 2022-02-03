@@ -34,7 +34,7 @@
 #include "FWCore/ServiceRegistry/interface/ESParentContext.h"
 
 #include <memory>
-#include "tbb/task_arena.h"
+#include "oneapi/tbb/task_arena.h"
 
 namespace {
   edm::ActivityRegistry activityRegistry;
@@ -94,7 +94,7 @@ public:
   void doGetExepTest();
 
   EventSetupRecordKey dummyRecordKey_;
-  tbb::task_arena taskArena_;
+  oneapi::tbb::task_arena taskArena_;
   EventSetupImpl eventSetupImpl_;
 };
 
@@ -143,7 +143,7 @@ private:
   bool invalidateTransientCalled_;
 };
 
-testEventsetupRecord::testEventsetupRecord() : taskArena_(1), eventSetupImpl_(&taskArena_) {}
+testEventsetupRecord::testEventsetupRecord() : taskArena_(1), eventSetupImpl_() {}
 void testEventsetupRecord::setUp() { dummyRecordKey_ = EventSetupRecordKey::makeKey<DummyRecord>(); }
 
 class WorkingDummyProvider : public edm::eventsetup::DataProxyProvider {
@@ -189,7 +189,7 @@ namespace {
       auto const& proxies = this->esGetTokenIndicesVector(edm::Transition::Event);
       for (size_t i = 0; i != proxies.size(); ++i) {
         edm::FinalWaitingTask waitTask;
-        tbb::task_group group;
+        oneapi::tbb::task_group group;
         edm::ServiceToken token;
         iRec.prefetchAsync(WaitingTaskHolder(group, &waitTask), proxies[i], nullptr, token, edm::ESParentContext{});
         do {
@@ -212,7 +212,7 @@ namespace {
       auto const& proxies = this->esGetTokenIndicesVector(edm::Transition::Event);
       for (size_t i = 0; i != proxies.size(); ++i) {
         edm::FinalWaitingTask waitTask;
-        tbb::task_group group;
+        oneapi::tbb::task_group group;
         edm::ServiceToken token;
         iRec.prefetchAsync(WaitingTaskHolder(group, &waitTask), proxies[i], nullptr, token, edm::ESParentContext{});
         do {
