@@ -33,7 +33,7 @@ public:
 
   std::pair<double, double> HGCalWaferUV2XY1(int32_t u, int32_t v, int32_t placementIndex, int32_t type);
   std::pair<double, double> HGCalWaferUV2XY2(int32_t u, int32_t v, int32_t placementIndex, int32_t type);
-  int32_t HGCalWaferUV2Cell(int32_t u, int32_t v, int32_t placementIndex, int32_t type);
+  std::pair<int32_t, int32_t> HGCalWaferUV2Cell(int32_t u, int32_t v, int32_t placementIndex, int32_t type);
   static int32_t HGCalWaferPlacementIndex(int32_t iz, int32_t fwdBack, int32_t orient);
 
 private:

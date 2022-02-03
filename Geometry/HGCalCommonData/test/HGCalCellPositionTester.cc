@@ -64,7 +64,7 @@ HGCalCellPositionTester::HGCalCellPositionTester(const edm::ParameterSet& iC)
 void HGCalCellPositionTester::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
   desc.add<double>("WaferSize", 166.4408);
-  desc.add<int>("WaferType", 0);
+  desc.add<int>("WaferType", 1);
   desc.add<int>("WaferPlacementIndex", 7);
   descriptions.add("hgcalCellPositionTester", desc);
 }
