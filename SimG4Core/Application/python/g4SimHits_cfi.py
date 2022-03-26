@@ -654,9 +654,15 @@ phase2_timing.toModify( g4SimHits, ECalSD = dict(
 ## Change CALO Thresholds
 ##
 from Configuration.Eras.Modifier_h2tb_cff import h2tb
-h2tb.toModify(g4SimHits, CaloSD = dict(
-              EminHits  = [0.0, 0.0, 0.0, 0.0, 0.0],
-              TmaxHits  = [1000.0, 1000.0, 1000.0, 1000.0, 2000.0] )
+h2tb.toModify(g4SimHits,
+              OnlySDs = ['EcalSensitiveDetector', 'CaloTrkProcessing', 'HcalTB06BeamDetector', 'HcalSensitiveDetector'],
+              CaloSD = dict(
+                  EminHits  = [0.0, 0.0, 0.0, 0.0, 0.0],
+                  TmaxHits  = [1000.0, 1000.0, 1000.0, 1000.0, 2000.0] ),
+              CaloTrkProcessing = dict(
+                  TestBeam = True ),
+              HCalSD = dict(
+                  ForTBHCAL = True )
 )
 
 ##
@@ -675,4 +681,9 @@ phase2_common.toModify(g4SimHits,
                        LHCTransport = False, 
                        MuonSD = dict( 
                        HaveDemoChambers = False ) 
+)
+
+from Configuration.Eras.Modifier_hgcaltb_cff import hgcaltb
+hgcaltb.toModify(g4SimHits,
+                 OnlySDs = ['AHcalSensitiveDetector', 'HGCSensitiveDetector', 'HGCalTB1601SensitiveDetector', 'HcalTB06BeamDetector']
 )

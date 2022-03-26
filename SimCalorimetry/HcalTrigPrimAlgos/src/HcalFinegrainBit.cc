@@ -63,22 +63,14 @@ std::bitset<6> HcalFinegrainBit::compute(const HcalFinegrainBit::TowerTDC& tower
 
     // timing bits
     if (TDC < 50) {  // exclude error code for TDC in HE (unpacked)
-      if (abs(tp_ieta) <=
-          16) {  // in HB, TDC values are compressed. 01 = first delayed range, 10 = second delayed range
-        if (TDC == 1 && bit15 == 1)
+      if ((abs(tp_ieta) <= 16) || (i >= 1)) {
+        // count delayed / prompt hits either in HB, or in HE (excluding depth 1 due to backgrounds in HE)
+        // TDC values are uncompressed (0-49) at the trigger primitive level. Packing (compressing HB TDC 6:2) happens in packer.
+        if (TDC > tdc_boundary[abs(tp_ieta) - 1][i] && TDC <= tdc_boundary[abs(tp_ieta) - 1][i] + 2 && bit15 == 1)
           Ndelayed += 1;
-        if (TDC == 2 && bit15 == 1)
+        if (TDC > tdc_boundary[abs(tp_ieta) - 1][i] + 2 && bit15 == 1)
           NveryDelayed += 1;
-        if (TDC == 0 && bit14 == 1)
-          Nprompt += 1;
-      }
-      if (abs(tp_ieta) > 16 &&
-          i >= 1) {  // in HE, TDC values are uncompressed (0-49). Exclude depth 1 in HE due to backgrounds
-        if (TDC > tdc_HE[abs(tp_ieta) - 1][i] && TDC <= tdc_HE[abs(tp_ieta) - 1][i] + 2 && bit15 == 1)
-          Ndelayed += 1;
-        if (TDC > tdc_HE[abs(tp_ieta) - 1][i] + 2 && bit15 == 1)
-          NveryDelayed += 1;
-        if (TDC <= tdc_HE[abs(tp_ieta) - 1][i] && TDC >= 0 && bit14 == 1)
+        if (TDC <= tdc_boundary[abs(tp_ieta) - 1][i] && TDC >= 0 && bit14 == 1)
           Nprompt += 1;
       }
     }
@@ -92,7 +84,7 @@ std::bitset<6> HcalFinegrainBit::compute(const HcalFinegrainBit::TowerTDC& tower
           1;  // deep layers, 3+. If bit13 = 1, energy in deep layers. Require ADC > 0 to ensure valid hit in cell
   }
 
-  // very delayed (100000), slightly delayed (010000), prompt (001000), 2 reserved bits (000110), depth flag (000001)
+  // very delayed (001000), slightly delayed (000100), prompt (000010), depth flag (000001), 2 reserved bits (110000)
   if (DeepEnergy > 0 && EarlyEnergy == 0)
     result[0] = true;  // 000001
   else

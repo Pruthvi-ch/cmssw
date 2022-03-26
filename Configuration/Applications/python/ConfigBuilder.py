@@ -89,6 +89,7 @@ defaultOptions.nThreads = '1'
 defaultOptions.nStreams = '0'
 defaultOptions.nConcurrentLumis = '0'
 defaultOptions.nConcurrentIOVs = '1'
+defaultOptions.accelerators = None
 
 # some helper routines
 def dumpPython(process,name):
@@ -2218,7 +2219,7 @@ class ConfigBuilder(object):
                 self.pythonCfgCode +=dumpPython(self.process,object)
 
         if self._options.pileup=='HiMixEmbGEN':
-            self.pythonCfgCode += "\nprocess.generator.embeddingMode=cms.bool(True)\n"
+            self.pythonCfgCode += "\nprocess.generator.embeddingMode=cms.int32(1)\n"
 
         # dump all paths
         self.pythonCfgCode += "\n# Path and EndPath definitions\n"
@@ -2280,6 +2281,16 @@ class ConfigBuilder(object):
             self.process.options.numberOfStreams = int(self._options.nStreams)
             self.process.options.numberOfConcurrentLuminosityBlocks = int(self._options.nConcurrentLumis)
             self.process.options.eventSetup.numberOfConcurrentIOVs = int(self._options.nConcurrentIOVs)
+
+        if self._options.accelerators is not None:
+            accelerators = self._options.accelerators.split(',')
+            self.pythonCfgCode += "\n"
+            self.pythonCfgCode += "# Enable only these accelerator backends\n"
+            self.pythonCfgCode += "process.load('Configuration.StandardSequences.Accelerators_cff')\n"
+            self.pythonCfgCode += "process.options.accelerators = ['" + "', '".join(accelerators) + "']\n"
+            self.process.load('Configuration.StandardSequences.Accelerators_cff')
+            self.process.options.accelerators = accelerators
+
         #repacked version
         if self._options.isRepacked:
             self.pythonCfgCode +="\n"

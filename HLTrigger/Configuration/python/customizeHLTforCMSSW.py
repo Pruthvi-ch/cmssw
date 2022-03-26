@@ -120,6 +120,9 @@ def customisePixelGainForRun2Input(process):
         producer.VCaltoElectronOffset    =  -60
         producer.VCaltoElectronOffset_L1 = -670
 
+    for producer in producers_by_type(process, "SiPixelRawToClusterCUDA"):
+        producer.isRun2 = True
+
     return process
 
 def customisePixelL1ClusterThresholdForRun2Input(process):
@@ -141,18 +144,13 @@ def customiseFor2018Input(process):
 
     return process
 
-# HLT customisation for https://github.com/cms-sw/cmssw/pull/36639
-def customiseFor36639(process):
-    """Customisation for change of cfi template of the EDProducer "PFCandidatePrimaryVertexSorter" wrt 12_3_0_pre4.
-    This customisation can be removed once menus are migrated to 12_3_0_pre5.
-    Ref: https://github.com/cms-sw/cmssw/pull/36639
-    """
-    for producer in producers_by_type(process, 'PFCandidatePrimaryVertexSorter'):
-        if hasattr(producer, 'assignment') and hasattr(producer.assignment, 'NumOfPUVtxsForCharged'):
-            if isinstance(producer.assignment.NumOfPUVtxsForCharged, cms.int32):
-                producer.assignment.NumOfPUVtxsForCharged = cms.uint32(max(0, producer.assignment.NumOfPUVtxsForCharged.value()))
-            elif not isinstance(producer.assignment.NumOfPUVtxsForCharged, cms.uint32):
-                raise Exception('invalid type for parameter "assignment.NumOfPUVtxsForCharged":\n'+producer.dumpPython())
+def customiseFor37231(process):
+    """ Customisation to fix the typo of Reccord in PR 37231 (https://github.com/cms-sw/cmssw/pull/37231) """
+
+    for prod in producers_by_type(process, 'DeDxEstimatorProducer'):
+        if hasattr(prod, 'Reccord'):
+            prod.Record = prod.Reccord
+            delattr(prod, 'Reccord')
 
     return process
 
@@ -165,6 +163,8 @@ def customizeHLTforCMSSW(process, menuType="GRun"):
 
     # add call to action function in proper order: newest last!
     # process = customiseFor12718(process)
-    process = customiseFor36639(process)
+
+    process = customiseFor37231(process)
 
     return process
+
