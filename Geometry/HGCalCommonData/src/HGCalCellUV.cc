@@ -1,5 +1,6 @@
 #include "Geometry/HGCalCommonData/interface/HGCalCellUV.h"
 #include "Geometry/HGCalCommonData/interface/HGCalTypes.h"
+#include "Geometry/HGCalCommonData/interface/HGCalWaferMask.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include <iostream>
 #include <array>
@@ -287,7 +288,7 @@ std::pair<int32_t, int32_t> HGCalCellUV::cellUVFromXY1(
   std::pair<int, int> uv = HGCalCellUV::cellUVFromXY1(xloc, yloc, placement, type, extend, debug);
   int u = uv.first;
   int v = uv.second;
-  if (partial == HGCalTypes::WaferLDTop) {
+  if ((partial != HGCalTypes::WaferFull) && (type == 1)) {
     if (u * HGCalTypes::edgeWaferLDTop[0] + v * HGCalTypes::edgeWaferLDTop[1] == HGCalTypes::edgeWaferLDTop[2] + 1) {
       double xloc1 = (placement >= HGCalCell::cellPlacementExtra) ? xloc : -xloc;
       int rot = placement % HGCalCell::cellPlacementExtra;
@@ -295,19 +296,27 @@ std::pair<int32_t, int32_t> HGCalCellUV::cellUVFromXY1(
       static constexpr std::array<double, 6> fsin = {{0.0, sin60_, sin60_, 0.0, -sin60_, -sin60_}};
       double xprime = -1 * (xloc1 * fcos[rot] - yloc * fsin[rot]);
       double yprime = xloc1 * fsin[rot] + yloc * fcos[rot];
-      double xcell = -1 * (1.5 * (v - u) + 0.5) * cellX;
-      double ycell = (v + u - 2 * ncell_[type] + 1) * cellY;
-      if ((yprime - sqrt3_ * xprime) > (ycell - sqrt3_ * xcell)) {
-        u += -1;
-        if ((v - u) >= ncell_[1])
-          --v;
-      } else {
-        u += -1;
-        v += -1;
-        v = std::max(v, 0);
+      std::vector<std::pair<double, double> > wxy =
+          HGCalWaferMask::waferXY(partial, 0, waferSize, 0.0, 0.0, 0.0);
+      double xp1 = wxy[1].first;
+      double yp1 = wxy[1].second;
+      double xp2 = wxy[2].first;
+      double yp2 = wxy[2].second;
+      if ((((xprime - xp1) / (xp2 - xp1)) - ((yprime - yp1) / (yp2 - yp1))) > 0.0){
+        double xcell = -1 * (1.5 * (v - u) + 0.5) * cellX;
+        double ycell = (v + u - 2 * ncell_[type] + 1) * cellY;
+        if ((yprime - sqrt3_ * xprime) > (ycell - sqrt3_ * xcell)) {
+          u += -1;
+          if ((v - u) >= ncell_[1])
+            --v;
+        } else {
+          u += -1;
+          v += -1;
+          v = std::max(v, 0);
+        }
       }
     }
-  } else if (partial == HGCalTypes::WaferHDBottom) {
+  } else if ((partial != HGCalTypes::WaferFull) && (type == 0)) {
     if (u * HGCalTypes::edgeWaferHDBottom[0] + v * HGCalTypes::edgeWaferHDBottom[1] ==
         HGCalTypes::edgeWaferHDBottom[2] + 1) {
       double xloc1 = (placement >= HGCalCell::cellPlacementExtra) ? xloc : -xloc;
@@ -316,13 +325,21 @@ std::pair<int32_t, int32_t> HGCalCellUV::cellUVFromXY1(
       static constexpr std::array<double, 6> fsin = {{0.0, sin60_, sin60_, 0.0, -sin60_, -sin60_}};
       double xprime = -1 * (xloc1 * fcos[rot] - yloc * fsin[rot]);
       double yprime = xloc1 * fsin[rot] + yloc * fcos[rot];
-      double xcell = -1 * (1.5 * (v - u) + 0.5) * cellX;
-      double ycell = (v + u - 2 * ncell_[type] + 1) * cellY;
-      if ((yprime - sqrt3_ * xprime) > (ycell - sqrt3_ * xcell)) {
-        u += 1;
-        v += 1;
-      } else {
-        u += 1;
+      std::vector<std::pair<double, double> > wxy =
+          HGCalWaferMask::waferXY(partial, 0, waferSize, 0.0, 0.0, 0.0);
+      double xp1 = wxy[4].first;
+      double yp1 = wxy[4].second;
+      double xp2 = wxy[5].first;
+      double yp2 = wxy[5].second;
+      if ((((xprime - xp1) / (xp2 - xp1)) - ((yprime - yp1) / (yp2 - yp1))) < 0.0){
+        double xcell = -1 * (1.5 * (v - u) + 0.5) * cellX;
+        double ycell = (v + u - 2 * ncell_[type] + 1) * cellY;
+        if ((yprime - sqrt3_ * xprime) > (ycell - sqrt3_ * xcell)) {
+          u += 1;
+          v += 1;
+        } else {
+          u += 1;
+        }
       }
     }
   }
